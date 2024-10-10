@@ -11,7 +11,7 @@ public class Todo {
     private String nome;
     private String descricao;
     private Boolean realizado;
-    private Integer priodade;
+    private Integer prioridade;
 
     public Long getId() {
         return id;
@@ -45,12 +45,12 @@ public class Todo {
         this.realizado = realizado;
     }
 
-    public Integer getPriodade() {
-        return priodade;
+    public Integer getPrioridade() {
+        return prioridade;
     }
 
-    public void setPriodade(Integer priodade) {
-        this.priodade = priodade;
+    public void setPrioridade(Integer priodade) {
+        this.prioridade = priodade;
     }
 
 }
