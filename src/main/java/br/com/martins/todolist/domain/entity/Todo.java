@@ -1,4 +1,4 @@
-package br.com.martins.todolist.entity;
+package br.com.martins.todolist.domain.entity;
 
 import jakarta.persistence.*;
 
