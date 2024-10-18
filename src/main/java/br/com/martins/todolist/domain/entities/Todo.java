@@ -1,6 +1,10 @@
-package br.com.martins.todolist.domain.entity;
+package br.com.martins.todolist.domain.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "todos")
@@ -8,10 +12,22 @@ public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nome;
+    private String titulo;
     private String descricao;
     private Boolean realizado;
     private Integer prioridade;
+
+    public Todo() {
+    }
+
+    // TODO: Validar campos nulos
+    public Todo(Long id, String titulo, String descricao, Boolean realizado, Integer prioridade) {
+        this.id = id;
+        this.titulo = titulo;
+        this.descricao = descricao;
+        this.realizado = (realizado != null) ? realizado : false;
+        this.prioridade = prioridade;
+    }
 
     public Long getId() {
         return id;
@@ -21,12 +37,12 @@ public class Todo {
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public String getTitulo() {
+        return titulo;
     }
 
-    public void setNome(String name) {
-        this.nome = name;
+    public void setTitulo(String name) {
+        this.titulo = name;
     }
 
     public String getDescricao() {
