@@ -5,29 +5,29 @@ import jakarta.validation.constraints.NotNull;
 
 public class TodoCreateRequestDto {
   @NotBlank(message = "O Titulo deve ser informado")
-  private final String titulo;
+  private final String title;
 
   @NotBlank(message = "A Descrição deve ser informada")
-  private final String descricao;
+  private final String description;
 
   @NotNull(message = "A prioridade deve ser informada")
-  private final Integer prioridade;
+  private final Integer priority;
 
-  public TodoCreateRequestDto(String titulo, String descricao, Integer prioridade) {
-    this.titulo = titulo;
-    this.descricao = descricao;
-    this.prioridade = prioridade;
+  public TodoCreateRequestDto(String title, String description, Integer priority) {
+    this.title = title;
+    this.description = description;
+    this.priority = priority;
   }
 
-  public String getTitulo() {
-    return titulo;
+  public String getTitle() {
+    return title;
   }
 
-  public String getDescricao() {
-    return descricao;
+  public String getDescription() {
+    return description;
   }
 
-  public Integer getPrioridade() {
-    return prioridade;
+  public Integer getPriority() {
+    return priority;
   }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -12,21 +13,25 @@ public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String titulo;
-    private String descricao;
-    private Boolean realizado;
-    private Integer prioridade;
+    private String title;
+    private String description;
+    private Boolean done;
+    private Integer priority;
+
+    @ManyToOne
+    private User user;
 
     public Todo() {
     }
 
     // TODO: Validar campos nulos
-    public Todo(Long id, String titulo, String descricao, Boolean realizado, Integer prioridade) {
+    public Todo(Long id, String title, String description, Boolean done, Integer priority, User user) {
         this.id = id;
-        this.titulo = titulo;
-        this.descricao = descricao;
-        this.realizado = (realizado != null) ? realizado : false;
-        this.prioridade = prioridade;
+        this.title = title;
+        this.description = description;
+        this.done = (done != null) ? done : false;
+        this.priority = priority;
+        this.user = (user != null) ? user : null;
     }
 
     public Long getId() {
@@ -37,36 +42,44 @@ public class Todo {
         this.id = id;
     }
 
-    public String getTitulo() {
-        return titulo;
+    public String getTitle() {
+        return title;
     }
 
-    public void setTitulo(String name) {
-        this.titulo = name;
+    public void setTitle(String name) {
+        this.title = name;
     }
 
-    public String getDescricao() {
-        return descricao;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
+    public void setDescription(String descricao) {
+        this.description = descricao;
     }
 
-    public Boolean getRealizado() {
-        return realizado;
+    public Boolean getDone() {
+        return done;
     }
 
-    public void setRealizado(Boolean realizado) {
-        this.realizado = realizado;
+    public void setDone(Boolean realizado) {
+        this.done = realizado;
     }
 
-    public Integer getPrioridade() {
-        return prioridade;
+    public Integer getPriority() {
+        return priority;
     }
 
-    public void setPrioridade(Integer priodade) {
-        this.prioridade = priodade;
+    public void setPriority(Integer priodade) {
+        this.priority = priodade;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
 }

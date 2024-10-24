@@ -1,5 +1,7 @@
 package br.com.martins.todolist.domain.entities;
 
+import java.util.List;
+
 import br.com.martins.todolist.domain.entities.enums.EnumRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,6 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 // TODO: Adicionar email para validação
@@ -24,6 +27,9 @@ public class User {
 
   @Enumerated(EnumType.STRING)
   private EnumRole role;
+
+  @OneToMany(mappedBy = "user")
+  private List<Todo> todo;
 
   public User() {
   }
@@ -65,6 +71,14 @@ public class User {
 
   public void setRole(EnumRole role) {
     this.role = role;
+  }
+
+  public List<Todo> getTodo() {
+    return todo;
+  }
+
+  public void setTodo(List<Todo> todo) {
+    this.todo = todo;
   }
 
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import br.com.martins.todolist.exceptions.SubjectNotInformedException;
 import br.com.martins.todolist.exceptions.TodoNotFoundException;
 
 @ControllerAdvice
@@ -24,8 +25,14 @@ public class RestExceptionHandler {
     return ResponseEntity.status(HttpStatus.CONFLICT).body(usernameNotFoundException.getMessage());
   }
 
+  @ExceptionHandler(SubjectNotInformedException.class)
+  private ResponseEntity<String> SubjectNotInformedExceptionHandler(
+      SubjectNotInformedException subjectNotInformedException) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(subjectNotInformedException.getMessage());
+  }
+
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<Map<String,String>> ValidationExceptionsHandler(
+  public ResponseEntity<Map<String, String>> ValidationExceptionsHandler(
       MethodArgumentNotValidException methodArgumentNotValidException) {
     Map<String, String> errors = new HashMap<>();
     methodArgumentNotValidException.getBindingResult().getFieldErrors()

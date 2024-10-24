@@ -4,30 +4,42 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.martins.todolist.domain.entities.Todo;
+import br.com.martins.todolist.domain.entities.User;
 import br.com.martins.todolist.domain.repositories.TodoRepository;
+import br.com.martins.todolist.domain.repositories.UserRepository;
 import br.com.martins.todolist.exceptions.TodoNotFoundException;
 
 @Service
 @Transactional
 public class TodoService {
   private final TodoRepository todoRepository;
+  private final UserRepository userRepository;
 
-  public TodoService(TodoRepository todoRepository) {
+  public TodoService(TodoRepository todoRepository, UserRepository userRepository) {
     this.todoRepository = todoRepository;
+    this.userRepository = userRepository;
   }
 
-  public Todo save(Todo todo) {
+  public Todo save(Todo todo, String username) {
+    Optional<User> user = userRepository.findByUsername(username);
+
+    if (user.isEmpty()) {
+      throw new UsernameNotFoundException("erro");
+    }
+
+    todo.setUser(user.get());
     Todo todoSaved = todoRepository.save(todo);
     return todoSaved;
   }
 
   public List<Todo> list() {
-    Sort sort = Sort.by("prioridade").descending().and(
-        Sort.by("titulo").ascending());
+    Sort sort = Sort.by("priority").descending().and(
+        Sort.by("title").ascending());
 
     return todoRepository.findAll(sort);
   }
