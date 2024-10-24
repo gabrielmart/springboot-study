@@ -25,29 +25,22 @@ public class TodoService {
     this.userRepository = userRepository;
   }
 
+  private User findUserByUsername(String username, String errorMessage) {
+    return userRepository.findByUsername(username)
+        .orElseThrow(() -> new UsernameNotFoundException(errorMessage));
+  }
+
   public Todo save(Todo todo, String username) {
-    Optional<User> user = userRepository.findByUsername(username);
-
-    if (user.isEmpty()) {
-      throw new UsernameNotFoundException("Não foi possivel encontrar o usuário para salvar o Todo informado");
-    }
-
-    todo.setUser(user.get());
-    Todo todoSaved = todoRepository.save(todo);
-    return todoSaved;
+    User user = findUserByUsername(username, "Não foi possivel encontrar o usuário para salvar o Todo informado");
+    todo.setUser(user);
+    return todoRepository.save(todo);
   }
 
   public List<Todo> list(String username) {
-    Optional<User> user = userRepository.findByUsername(username);
+    User user = findUserByUsername(username, "Não foi possivel encontrar o usuário para listar os Todos");
 
-    if (user.isEmpty()) {
-      throw new UsernameNotFoundException("Não foi possivel encontrar o usuário para listar os Todos");
-    }
-
-    Sort sort = Sort.by("priority").descending().and(
-        Sort.by("title").ascending());
-
-    return todoRepository.findByUser(user.get(), sort);
+    Sort sort = Sort.by("priority").descending().and(Sort.by("title").ascending());
+    return todoRepository.findByUser(user, sort);
   }
 
   public Optional<Todo> findById(Long id) {
@@ -55,35 +48,21 @@ public class TodoService {
   }
 
   public Todo update(Long id, Todo todo, String username) {
-    Optional<User> user = userRepository.findByUsername(username);
+    User user = findUserByUsername(username, "Não foi possivel encontrar o usuário para atualizar o Todo");
 
-    if (user.isEmpty()) {
-      throw new UsernameNotFoundException("Não foi possivel encontrar o usuário para atualizar o Todo");
-    }
-
-    Boolean isTodoExisting = todoRepository.existsByIdAndUser(id, user.get());
-
-    if (!isTodoExisting) {
+    if (!todoRepository.existsByIdAndUser(id, user)) {
       throw new TodoNotFoundException("O ID do Todo informado para atualização não existe");
     }
 
     todo.setId(id);
-    todo.setUser(user.get());
-    Todo todoUpdated = todoRepository.save(todo);
-
-    return todoUpdated;
+    todo.setUser(user);
+    return todoRepository.save(todo);
   }
 
   public List<Todo> delete(Long id, String username) {
-    Optional<User> user = userRepository.findByUsername(username);
+    User user = findUserByUsername(username, "Não foi possivel encontrar o usuário para deletar o Todo informado");
 
-    if (user.isEmpty()) {
-      throw new UsernameNotFoundException("Não foi possivel encontrar o usuário para deletar o Todo informado");
-    }
-
-    Boolean isTodoExisting = todoRepository.existsByIdAndUser(id, user.get());
-
-    if (!isTodoExisting) {
+    if (!todoRepository.existsByIdAndUser(id, user)) {
       throw new TodoNotFoundException("O ID do Todo informado para exclusão não existe");
     }
 
