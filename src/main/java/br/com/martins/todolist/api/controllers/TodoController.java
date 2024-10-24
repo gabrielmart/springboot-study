@@ -39,7 +39,6 @@ public class TodoController {
   @PostMapping
   public ResponseEntity<TodoResponseDto> create(@RequestBody @Valid TodoCreateRequestDto todoCreateRequestDto,
       @RequestHeader("Authorization") String authorizationHeader) {
-
     String username = getSubjectInJWT(authorizationHeader);
 
     Todo todo = TodoMapper.toTodo(todoCreateRequestDto);
@@ -48,22 +47,31 @@ public class TodoController {
   }
 
   @GetMapping
-  public ResponseEntity<List<TodoResponseDto>> list() {
-    List<TodoResponseDto> todoResponseDtoList = TodoMapper.toTodoResponseDtoList(todoService.list());
+  public ResponseEntity<List<TodoResponseDto>> list(@RequestHeader("Authorization") String authorizationHeader) {
+    String username = getSubjectInJWT(authorizationHeader);
+
+    List<TodoResponseDto> todoResponseDtoList = TodoMapper.toTodoResponseDtoList(todoService.list(username));
     return ResponseEntity.status(HttpStatus.OK).body(todoResponseDtoList);
   }
 
   @PutMapping("{id}")
   public ResponseEntity<TodoResponseDto> update(@PathVariable Long id,
-      @RequestBody @Valid TodoUpdateRequestDto todoUpdateRequestDto) {
+      @RequestBody @Valid TodoUpdateRequestDto todoUpdateRequestDto,
+      @RequestHeader("Authorization") String authorizationHeader) {
+    String username = getSubjectInJWT(authorizationHeader);
+
     Todo todo = TodoMapper.toTodo(todoUpdateRequestDto);
-    TodoResponseDto todoResponseDto = TodoMapper.toTodoResponseDto(todoService.update(id, todo));
+    TodoResponseDto todoResponseDto = TodoMapper.toTodoResponseDto(todoService.update(id, todo, username));
     return ResponseEntity.status(HttpStatus.OK).body(todoResponseDto);
   }
 
   @DeleteMapping("{id}")
-  public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
-    todoService.delete(id);
+  public ResponseEntity<Void> delete(@PathVariable("id") Long id,
+      @RequestHeader("Authorization") String authorizationHeader) {
+
+    String username = getSubjectInJWT(authorizationHeader);
+
+    todoService.delete(id, username);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
