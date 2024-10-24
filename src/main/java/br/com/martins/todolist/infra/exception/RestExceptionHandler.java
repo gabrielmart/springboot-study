@@ -1,4 +1,4 @@
-package br.com.martins.todolist.infra;
+package br.com.martins.todolist.infra.exception;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +15,15 @@ import br.com.martins.todolist.exceptions.TodoNotFoundException;
 
 @ControllerAdvice
 public class RestExceptionHandler {
+  @ExceptionHandler(Exception.class)
+  private ResponseEntity<String> handleUnknownException(Exception exception) {
+    System.out.println("Unhandled Exceptions");
+    exception.printStackTrace();
+
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body("Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.");
+  }
+
   @ExceptionHandler(TodoNotFoundException.class)
   private ResponseEntity<String> TodoNotFoundExceptionHandler(TodoNotFoundException todoNotFoundException) {
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(todoNotFoundException.getMessage());
