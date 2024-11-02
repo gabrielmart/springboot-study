@@ -1,7 +1,8 @@
 package br.com.martins.todolist.infra.exception;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,42 +11,54 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import br.com.martins.todolist.api.dtos.responses.ApiResponseDto;
+import br.com.martins.todolist.api.dtos.responses.MethodArgumentNotValidExceptionResponseDto;
 import br.com.martins.todolist.exceptions.SubjectNotInformedException;
 import br.com.martins.todolist.exceptions.TodoNotFoundException;
 
 @ControllerAdvice
 public class RestExceptionHandler {
-  @ExceptionHandler(Exception.class)
-  private ResponseEntity<String> handleUnknownException(Exception exception) {
-    System.out.println("Unhandled Exceptions");
-    exception.printStackTrace();
 
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .body("Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.");
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<ApiResponseDto<Void>> handleValidationException(MethodArgumentNotValidException ex) {
+    List<Object> errors = ex.getBindingResult().getFieldErrors()
+        .stream()
+        .map(error -> new MethodArgumentNotValidExceptionResponseDto(error.getField(), error.getDefaultMessage()))
+        .collect(Collectors.toList());
+
+    ApiResponseDto<Void> apiResponse = new ApiResponseDto<>(HttpStatus.BAD_REQUEST,
+        "Validação falhou. Confira os erros de campo para correções", null, errors);
+    return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
   }
 
   @ExceptionHandler(TodoNotFoundException.class)
-  private ResponseEntity<String> TodoNotFoundExceptionHandler(TodoNotFoundException todoNotFoundException) {
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(todoNotFoundException.getMessage());
+  private ResponseEntity<ApiResponseDto<Void>> todoNotFoundExceptionHandler(
+      TodoNotFoundException todoNotFoundException) {
+    ApiResponseDto<Void> apiResponse = new ApiResponseDto<>(HttpStatus.NOT_FOUND, todoNotFoundException.getMessage(),
+        null, null);
+    return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
   }
 
   @ExceptionHandler(UsernameNotFoundException.class)
-  private ResponseEntity<String> UsernameNotFoundExceptionHandler(UsernameNotFoundException usernameNotFoundException) {
-    return ResponseEntity.status(HttpStatus.CONFLICT).body(usernameNotFoundException.getMessage());
+  private ResponseEntity<ApiResponseDto<Void>> usernameNotFoundExceptionHandler(
+      UsernameNotFoundException usernameNotFoundException) {
+    ApiResponseDto<Void> apiResponse = new ApiResponseDto<>(HttpStatus.NOT_FOUND,
+        usernameNotFoundException.getMessage(), null, null);
+    return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
   }
 
   @ExceptionHandler(SubjectNotInformedException.class)
-  private ResponseEntity<String> SubjectNotInformedExceptionHandler(
+  private ResponseEntity<ApiResponseDto<Void>> subjectNotInformedExceptionHandler(
       SubjectNotInformedException subjectNotInformedException) {
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(subjectNotInformedException.getMessage());
+    ApiResponseDto<Void> apiResponse = new ApiResponseDto<>(HttpStatus.BAD_REQUEST,
+        subjectNotInformedException.getMessage(), null, null);
+    return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
   }
 
-  @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<Map<String, String>> ValidationExceptionsHandler(
-      MethodArgumentNotValidException methodArgumentNotValidException) {
-    Map<String, String> errors = new HashMap<>();
-    methodArgumentNotValidException.getBindingResult().getFieldErrors()
-        .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
-    return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<ApiResponseDto<Void>> handleGenericException(Exception ex) {
+    ApiResponseDto<Void> apiResponse = new ApiResponseDto<>(HttpStatus.INTERNAL_SERVER_ERROR,
+        "Erro interno do servidor", null, Arrays.asList(ex.getMessage()));
+    return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
   }
 }

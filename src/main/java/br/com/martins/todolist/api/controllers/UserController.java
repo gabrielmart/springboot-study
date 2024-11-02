@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.martins.todolist.api.dtos.requests.UserCreateRequestDto;
 import br.com.martins.todolist.api.dtos.responses.UserResponseDto;
+import br.com.martins.todolist.api.dtos.responses.ApiResponseDto;
 import br.com.martins.todolist.api.mappers.UserMapper;
 import br.com.martins.todolist.domain.entities.User;
 import br.com.martins.todolist.domain.services.UserService;
@@ -17,18 +18,25 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-  private UserService userService;
+  private final UserService userService;
 
   public UserController(UserService userService) {
     this.userService = userService;
   }
 
-  @PostMapping()
-  public ResponseEntity<UserResponseDto> create(@RequestBody @Valid UserCreateRequestDto userCreateRequestDto) {
+  @PostMapping
+  public ResponseEntity<ApiResponseDto<UserResponseDto>> create(
+      @RequestBody @Valid UserCreateRequestDto userCreateRequestDto) {
+
     User user = UserMapper.toUser(userCreateRequestDto);
     UserResponseDto userResponseDto = UserMapper.toUserResponseDto(userService.save(user));
 
-    return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDto);
-  }
+    ApiResponseDto<UserResponseDto> apiResponseDto = new ApiResponseDto<>(
+        HttpStatus.CREATED,
+        "Usuário criado com sucesso",
+        userResponseDto,
+        null);
 
+    return ResponseEntity.status(apiResponseDto.getStatus()).body(apiResponseDto);
+  }
 }
