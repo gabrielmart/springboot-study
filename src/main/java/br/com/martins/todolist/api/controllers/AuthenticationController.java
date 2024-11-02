@@ -13,7 +13,7 @@ import br.com.martins.todolist.api.dtos.responses.TokenResponseDto;
 import br.com.martins.todolist.infra.security.domain.services.AuthenticationService;
 
 @RestController
-@RequestMapping("/authenticate")
+@RequestMapping("/api/v1/authenticate")
 public class AuthenticationController {
 
   private AuthenticationService authenticationService;

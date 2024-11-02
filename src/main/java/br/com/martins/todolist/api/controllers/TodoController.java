@@ -27,7 +27,7 @@ import br.com.martins.todolist.exceptions.SubjectNotInformedException;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/todos")
+@RequestMapping("/api/v1/todos")
 public class TodoController {
   private final TodoService todoService;
   private final JwtDecoder jwtDecoder;

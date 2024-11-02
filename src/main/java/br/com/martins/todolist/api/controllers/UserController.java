@@ -16,7 +16,7 @@ import br.com.martins.todolist.domain.services.UserService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/v1/users")
 public class UserController {
   private final UserService userService;
 
