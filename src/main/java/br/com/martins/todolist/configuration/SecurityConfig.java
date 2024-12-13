@@ -37,8 +37,9 @@ public class SecurityConfig {
     http.csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(
             authorize -> authorize
-                .requestMatchers("/users").permitAll()
-                .requestMatchers("/authenticate").permitAll()
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                .requestMatchers("/api/v1/users").permitAll()
+                .requestMatchers("/api/v1/authenticate").permitAll()
                 .anyRequest().authenticated())
         .httpBasic(Customizer.withDefaults())
         .oauth2ResourceServer(
