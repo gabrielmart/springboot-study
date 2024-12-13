@@ -1,8 +1,10 @@
 package br.com.martins.todolist.api.dtos.requests;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+@Schema(description = "Payload for user creation")
 public class UserCreateRequestDto {
   @NotBlank(message = "O username deve ser informado")
   private final String username;

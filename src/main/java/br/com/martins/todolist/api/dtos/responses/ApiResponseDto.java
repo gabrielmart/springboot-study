@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "Scheme with standard structure for response")
 public class ApiResponseDto<T> {
   private HttpStatus status;
   private String message;
