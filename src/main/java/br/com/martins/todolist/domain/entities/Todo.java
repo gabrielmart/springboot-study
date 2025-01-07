@@ -22,6 +22,7 @@ public class Todo {
     private User user;
 
     public Todo() {
+        this.done = false;
     }
 
     // TODO: Validar campos nulos
