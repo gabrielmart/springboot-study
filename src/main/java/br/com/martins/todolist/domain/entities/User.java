@@ -32,6 +32,7 @@ public class User {
   private List<Todo> todo;
 
   public User() {
+    this.role = (role != null) ? role : EnumRole.CUSTOMER;
   }
 
   public User(Long id, String username, String password, EnumRole role) {
